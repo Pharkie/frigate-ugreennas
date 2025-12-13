@@ -1,0 +1,34 @@
+services:
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    restart: unless-stopped
+    shm_size: "256mb"  # Increase if you get memory errors
+
+    # CPU-only detection (no Coral TPU)
+    # Add these if you get a Coral USB later:
+    # devices:
+    #   - /dev/bus/usb:/dev/bus/usb  # Coral USB
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config:/config
+      - /volume1/Media/frigate:/media/frigate
+
+    networks:
+      traefik-proxy:
+        ipv4_address: 192.168.100.x  # Pick unused IP
+
+    env_file:
+      - .env
+
+    # Ports - accessible via NAS IP
+    ports:
+      - "5000:5000"   # Web UI
+      - "8554:8554"   # RTSP restream
+      - "8555:8555/tcp"   # WebRTC
+      - "8555:8555/udp"   # WebRTC
+
+networks:
+  traefik-proxy:
+    external: true

@@ -1,0 +1,24 @@
+# Environment and secrets
+.env
+*.env.local
+
+# Real config files (use .example.yml as templates)
+docker-compose.frigate.yml
+config/config.yml
+
+# Frigate data (don't commit recordings/clips)
+clips/
+recordings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Claude local overrides (private details)
+.claude/*.local.md
+.claude/plans/

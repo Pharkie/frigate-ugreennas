@@ -1,0 +1,78 @@
+mqtt:
+  host: homeassistant.local
+  port: 1883
+  user: homeassistant
+  password: "{FRIGATE_MQTT_PASSWORD}"
+
+detectors:
+  cpu:
+    type: cpu
+    num_threads: 4
+
+ffmpeg:
+  hwaccel_args: []  # CPU-only, no hardware acceleration
+
+# Global recording settings
+record:
+  enabled: true
+  retain:
+    days: 7
+    mode: motion
+  events:
+    retain:
+      default: 14
+      mode: active_objects
+
+# Global snapshot settings
+snapshots:
+  enabled: true
+  retain:
+    default: 14
+
+# Global detection settings
+detect:
+  width: 1280
+  height: 720
+  fps: 5
+
+# Global object settings
+objects:
+  track:
+    - person
+    - dog
+    - cat
+    - car
+  filters:
+    person:
+      min_score: 0.5
+      threshold: 0.7
+
+# Camera definitions - customize for your setup
+# RTSP channel = NVR channel + 1 (e.g., NVR ch1 → h264Preview_02_main)
+cameras:
+  camera1:
+    ffmpeg:
+      inputs:
+        - path: "rtsp://admin:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_NVR_IP}:554/h264Preview_02_sub"
+          roles:
+            - detect
+        - path: "rtsp://admin:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_NVR_IP}:554/h264Preview_02_main"
+          roles:
+            - record
+    detect:
+      enabled: true
+    record:
+      enabled: true
+    snapshots:
+      enabled: true
+
+  # Add more cameras as needed:
+  # camera2:
+  #   ffmpeg:
+  #     inputs:
+  #       - path: "rtsp://admin:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_NVR_IP}:554/h264Preview_03_sub"
+  #         roles:
+  #           - detect
+  #       - path: "rtsp://admin:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_NVR_IP}:554/h264Preview_03_main"
+  #         roles:
+  #           - record
