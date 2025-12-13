@@ -5,7 +5,7 @@ AI-powered camera monitoring with Frigate NVR on Ugreen NAS DXP4800+, integrated
 ## Hardware
 
 - **NAS**: Ugreen DXP4800+ (no iGPU - CPU-only detection)
-- **Cameras**: Reolink cameras via NVR
+- **Cameras**: Any Frigate-compatible cameras (tested with Reolink via NVR)
 - **Detection**: CPU (4 threads) - Coral TPU optional upgrade
 
 ## Setup
@@ -41,11 +41,11 @@ docker compose pull && docker compose up -d  # Update
 ## Architecture
 
 ```
-Reolink NVR (your-nvr-ip)
-    ↓ RTSP streams
+Cameras/NVR (RTSP/HTTP)
+    ↓ streams
 Frigate (your-nas-ip:5000)
     ↓ MQTT
-Home Assistant (your-ha-ip)
+Home Assistant
     ↓ Automations
 Notifications
 ```
@@ -59,8 +59,8 @@ Notifications
 ## Documentation
 
 - [UGOS Setup Notes](docs/UGOS-SETUP.md) - NAS-specific configuration
-- [Reolink Camera Guide](docs/REOLINK-CAMERAS.md) - Stream types and troubleshooting
-- [Frigate Docs](https://docs.frigate.video/) - Official documentation
+- [Reolink Camera Guide](docs/REOLINK-CAMERAS.md) - Reolink-specific stream configuration
+- [Frigate Docs](https://docs.frigate.video/) - Official documentation (camera compatibility, config reference)
 
 ## Configuration Notes
 
