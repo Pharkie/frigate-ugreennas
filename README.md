@@ -2,7 +2,7 @@
 
 AI-powered camera monitoring with Frigate NVR, integrated with Home Assistant for smart notifications.
 
-Works on any Docker host. Tested on Ugreen NAS DXP4800+ (see [UGOS Setup Notes](docs/UGOS-SETUP.md) for NAS-specific quirks).
+Should work on any Docker host, but developed and tested specifically on Ugreen NAS DXP4800+ (see [UGOS Setup Notes](docs/UGOS-SETUP.md) for NAS-specific quirks).
 
 ## Requirements
 
