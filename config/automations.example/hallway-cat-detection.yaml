@@ -36,7 +36,7 @@ action:
       camera: "{{ trigger.payload_json.after.camera }}"
       label: "{{ trigger.payload_json.after.label | title }}"
       thumbnail_url: "/api/frigate/notifications/{{ id }}/thumbnail.jpg"
-      clip_url: "https://YOUR_HA_EXTERNAL_URL/api/frigate/notifications/{{ id }}/{{ camera }}/clip.mp4?sign=true"
+      clip_url: "https://YOUR_HA_EXTERNAL_URL/api/frigate/notifications/{{ id }}/{{ camera }}/master.m3u8"
 
   # Short delay to ensure clip is fully ready
   - delay:

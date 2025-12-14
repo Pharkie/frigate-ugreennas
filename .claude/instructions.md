@@ -62,6 +62,17 @@ ha addons list        # List installed add-ons
 ha backups list       # List backups
 ```
 
+### Editing HA Config Files via SSH
+HA config files are owned by root. The hassio user MUST use sudo to edit:
+```bash
+# Use password auth (key may not work)
+sshpass -p 'PASSWORD' ssh hassio@homeassistant.local "sudo sed -i 's|old|new|g' /homeassistant/automations.yaml"
+
+# Reload after editing
+source .env && curl -X POST "$HA_URL/api/services/automation/reload" -H "Authorization: Bearer $HA_TOKEN"
+```
+NOTE: scp doesn't work on HA SSH add-on. Use sed -i or cat pipe with sudo.
+
 ### HA REST API (preferred)
 Use API instead of SSH when possible. Token stored in `.env` (gitignored).
 ```bash
