@@ -4,9 +4,15 @@ Frigate detects objects, LLM describes the scene, and you get a video clip notif
 
 ## What You Get
 
+<img src="docs/images/ios_notification.png" alt="iOS notification example" width="300" align="right">
+
 A notification with the AI description and a thumbnail. Tap to view the clip.
 
-![iOS notification example](docs/images/ios_notification.png)
+> **Hallway: Cat**
+> A tabby cat walks across the hallway toward the camera.
+> *[Tap to view clip]*
+
+<br clear="right">
 
 ## What This Repo Contains
 
