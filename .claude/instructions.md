@@ -116,3 +116,18 @@ Install via HACS UI:
 
 ## On Auth Failures
 On ANY SSH or sudo authentication failure, immediately ask the user for the correct password. Don't retry or debug - just ask.
+
+## IMPORTANT: Always Check .env First
+Before asking the user for credentials, ALWAYS check `.env` in the project root. It contains:
+- `HA_TOKEN` - Home Assistant long-lived access token
+- `HA_URL` - Home Assistant URL
+- Other credentials as needed
+
+Also check `.claude/config.local.md` for SSH passwords and hostnames.
+
+## HA API Usage
+Always prefer the HA REST API over SSH for Home Assistant operations:
+```bash
+source .env
+curl -X POST "$HA_URL/api/services/automation/reload" -H "Authorization: Bearer $HA_TOKEN"
+```

@@ -1,0 +1,70 @@
+# Home Assistant Automation - Frigate + LLM Vision Notification
+#
+# A simple, reliable automation for AI-powered camera notifications.
+# Triggers when an event ENDS (clip is ready), analyzes with LLM Vision,
+# and sends a mobile notification with thumbnail.
+#
+# Prerequisites:
+#   - Frigate integration connected via MQTT
+#   - LLM Vision integration (HACS) configured with your AI provider
+#   - Mobile app configured for notifications
+#
+# Setup:
+#   1. Copy to config/automations/
+#   2. Update: camera name, labels, provider ID, model, notify service
+#   3. Import into HA: Settings → Automations → Create → Edit as YAML
+
+alias: Hallway Cat Detection
+description: Simple Frigate + LLM Vision notification
+mode: restart
+
+trigger:
+  - trigger: mqtt
+    topic: frigate/events
+    value_template: "{{ value_json['type'] }}"
+    payload: "end"  # Wait for event to end so clip is ready
+
+condition:
+  - condition: template
+    value_template: >-
+      {{ trigger.payload_json.after.camera == 'hallway'
+         and trigger.payload_json.after.label in ['person', 'cat'] }}
+
+action:
+  - variables:
+      id: "{{ trigger.payload_json.after.id }}"
+      camera: "{{ trigger.payload_json.after.camera }}"
+      label: "{{ trigger.payload_json.after.label | title }}"
+      thumbnail_url: "/api/frigate/notifications/{{ id }}/thumbnail.jpg"
+
+  # Short delay to ensure clip is fully ready
+  - delay:
+      seconds: 5
+
+  - action: llmvision.video_analyzer
+    data:
+      provider: YOUR_PROVIDER_ID  # Get from: Settings → Devices & Services → LLM Vision → Configure
+      model: gemini-2.0-flash     # Or: gpt-4o-mini, claude-3-haiku, etc.
+      event_id: "{{ id }}"
+      max_tokens: 100
+      max_frames: 3
+      target_width: 1280
+      temperature: 0.1
+      frigate_retry_attempts: 4
+      frigate_retry_seconds: 30
+      expose_images: true
+      include_filename: false
+      remember: true
+      generate_title: true
+      message: Describe what is happening in one sentence.
+    response_variable: response
+
+  - action: notify.mobile_app_your_phone  # Replace with your notify service
+    data:
+      title: "{{ camera | title }}: {{ label }}"
+      message: "{{ response.response_text | default(label ~ ' detected') }}"
+      data:
+        attachment:
+          url: "{{ thumbnail_url }}"
+        push:
+          interruption-level: active

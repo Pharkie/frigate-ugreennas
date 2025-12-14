@@ -5,6 +5,7 @@
 # Real config files (use .example.yml as templates)
 docker-compose.frigate.yml
 config/config.yml
+config/automations/
 
 # Frigate data (don't commit recordings/clips)
 clips/

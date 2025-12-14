@@ -58,6 +58,21 @@ Notifications
 - **RTSP Restream**: rtsp://your-nas-ip:8554/{camera_name}
 - **Home Assistant**: http://homeassistant.local:8123
 
+## AI Notifications
+
+For AI-powered notifications using LLM Vision (Google Gemini, OpenAI, etc.):
+
+1. Install [LLM Vision](https://github.com/valentinfrlch/ha-llmvision) via HACS
+2. Configure your AI provider (e.g., Google Gemini API key)
+3. Copy the example automation:
+   ```bash
+   cp config/automations.example/hallway-cat-detection.yaml config/automations/
+   # Edit with your camera, provider ID, and notify service
+   ```
+4. Import into Home Assistant (Settings → Automations → Create → Edit as YAML)
+
+See [config/automations.example/](config/automations.example/) for a simple, working automation that avoids the complexity and bugs of larger blueprints.
+
 ## Documentation
 
 - [UGOS Setup Notes](docs/UGOS-SETUP.md) - NAS-specific configuration
