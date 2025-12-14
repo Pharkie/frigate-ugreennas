@@ -1,6 +1,6 @@
-# Frigate NVR on Docker
+# AI-Described Security Clips to Your Phone — In 80 Lines
 
-Frigate detects objects; LLM describes what happened. Integrated with Home Assistant for smart notifications that provide the video clip direct to your phone.
+Frigate detects objects, LLM describes the scene, and you get a video clip notification on your phone.
 
 ## Why This Exists
 
