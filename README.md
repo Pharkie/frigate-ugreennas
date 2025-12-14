@@ -1,6 +1,12 @@
 # Frigate NVR on Docker
 
-AI-powered camera monitoring with Frigate NVR, integrated with Home Assistant for smart notifications.
+Frigate detects objects; LLM describes what happened. Integrated with Home Assistant for smart notifications that provide the video clip direct to your phone.
+
+## Why This Exists
+
+I struggled to understand and get working the [500+ line Blueprint](https://community.home-assistant.io/t/blueprint-frigate-vision-ai-powered-notifications-with-llm-recognition-cooldowns-multi-cam-logic-v0-9/907582/13) and its [1000+ line derivatives](https://community.home-assistant.io/t/frigate-ai-notification-multi-camera-include-exclude-zones-llmvision-low-noise/937467). So, I reverse engineered it back to ~80 lines of simple YAML: specify a camera, specify detection events (person, cat), get an AI summary, send a notification to iOS with the video clip. That's it.
+
+## Compatibility
 
 Should work on any Docker host, but developed and tested specifically on Ugreen NAS DXP4800+ (see [UGOS Setup Notes](docs/UGOS-SETUP.md) for NAS-specific quirks).
 
@@ -43,13 +49,15 @@ docker compose pull && docker compose up -d  # Update
 ## Architecture
 
 ```
-Cameras/NVR (RTSP/HTTP)
-    ↓ streams
-Frigate (your-nas-ip:5000)
-    ↓ MQTT
+Cameras/NVR (RTSP)
+    ↓
+Frigate (local object detection)
+    ↓ MQTT event: "person detected"
 Home Assistant
-    ↓ Automations
-Notifications
+    ↓ triggers automation
+LLM Vision (analyzes 3 frames from clip)
+    ↓
+Notification (LLM description + clip link)
 ```
 
 ## Key URLs
@@ -58,9 +66,11 @@ Notifications
 - **RTSP Restream**: rtsp://your-nas-ip:8554/{camera_name}
 - **Home Assistant**: http://homeassistant.local:8123
 
-## AI Notifications
+## AI-Enhanced Notifications
 
-For AI-powered notifications using LLM Vision (Google Gemini, OpenAI, etc.):
+**How it works**: Frigate runs object detection locally (no cloud). When it detects something (person, cat, etc.), Home Assistant triggers an automation that sends 3 frames from the recorded clip to an LLM (e.g., Google Gemini) for a text description. You get a notification with the LLM's description + a link to the clip.
+
+To set this up:
 
 1. Install [LLM Vision](https://github.com/valentinfrlch/ha-llmvision) via HACS
 2. Configure your AI provider (e.g., Google Gemini API key)
