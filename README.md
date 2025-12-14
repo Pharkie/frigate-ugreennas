@@ -21,7 +21,9 @@ A notification with the AI description and a thumbnail. Tap to view the clip.
 
 ## Why This Exists
 
-I struggled to understand and get working the [500+ line Blueprint](https://community.home-assistant.io/t/blueprint-frigate-vision-ai-powered-notifications-with-llm-recognition-cooldowns-multi-cam-logic-v0-9/907582/13) and its [1000+ line derivatives](https://community.home-assistant.io/t/frigate-ai-notification-multi-camera-include-exclude-zones-llmvision-low-noise/937467). So, I reverse engineered it back to an ~80 line Home Assistant automation: specify a camera, specify detection events (person, cat), get an AI summary, send a notification to iOS with the video clip. That's it.
+**Frigate**: Getting Frigate running was half the puzzle — camera streams, detection settings, MQTT integration. The Docker config here is what worked for me.
+
+**Home Assistant automation**: The other half was triggering notifications with LLM descriptions. I struggled to understand and get working the [500+ line Blueprint](https://community.home-assistant.io/t/blueprint-frigate-vision-ai-powered-notifications-with-llm-recognition-cooldowns-multi-cam-logic-v0-9/907582/13) and its [1000+ line derivatives](https://community.home-assistant.io/t/frigate-ai-notification-multi-camera-include-exclude-zones-llmvision-low-noise/937467). So, I reverse engineered it back to an ~80 line automation: specify a camera, specify detection events (person, cat), get an AI summary, send a notification with the video clip. That's it.
 
 ## Prerequisites
 
