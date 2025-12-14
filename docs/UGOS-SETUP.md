@@ -54,16 +54,27 @@ cat docker-compose.frigate.yml | ssh your-user@your-nas.local "cat > /volume1/do
         └── recordings/
 ```
 
-## Network Considerations
+## Network Configuration
 
-### Existing Infrastructure
-The NAS already has a Docker network from the [arr-stack project](https://github.com/Pharkie/arr-stack-ugreennas):
-- **Network**: traefik-proxy (192.168.100.0/24)
-- **Traefik**: 192.168.100.2 (reverse proxy with SSL)
+### Default: Standalone with Port Mapping
 
-### Frigate Network Options
+This is the simplest setup - Frigate runs on your NAS IP with exposed ports:
 
-**Option A: Join traefik-proxy (recommended for remote access)**
+```yaml
+services:
+  frigate:
+    ports:
+      - "5000:5000"   # Web UI
+      - "8554:8554"   # RTSP restream
+      - "8555:8555"   # WebRTC
+```
+
+Access Frigate at `http://your-nas-ip:5000`.
+
+### Optional: Traefik Reverse Proxy
+
+If you have Traefik set up for SSL and remote access (e.g., from the [arr-stack project](https://github.com/Pharkie/arr-stack-ugreennas)), you can add Frigate to that network:
+
 ```yaml
 networks:
   traefik-proxy:
@@ -73,18 +84,10 @@ services:
   frigate:
     networks:
       traefik-proxy:
-        ipv4_address: 192.168.100.20  # Pick unused IP
+        ipv4_address: 192.168.100.20  # Pick unused IP from your Traefik network
 ```
 
-**Option B: Standalone with port mapping (simpler)**
-```yaml
-services:
-  frigate:
-    ports:
-      - "5000:5000"   # Web UI
-      - "8554:8554"   # RTSP restream
-      - "8555:8555"   # WebRTC
-```
+This allows accessing Frigate via your domain with SSL (e.g., `https://frigate.yourdomain.com`).
 
 ## Hardware Limitations
 
@@ -101,9 +104,9 @@ lsusb
 
 ## Port Conflicts
 
-nginx (UGOS web UI) uses ports 80/443 by default. Already moved to 8080/8443 for Traefik.
+nginx (UGOS web UI) uses ports 80/443 by default. Frigate uses 5000/8554/8555 so there's no conflict.
 
-If Frigate needs port 80/443 directly (unlikely), coordinate with existing Traefik setup.
+If you're using Traefik for SSL, you'll need to move nginx to alternate ports (e.g., 8080/8443).
 
 ## Troubleshooting
 

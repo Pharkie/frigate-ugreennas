@@ -6,29 +6,32 @@ services:
     shm_size: "256mb"  # Increase if you get memory errors
 
     # CPU-only detection (no Coral TPU)
-    # Add these if you get a Coral USB later:
+    # Uncomment if you have a Coral USB:
     # devices:
-    #   - /dev/bus/usb:/dev/bus/usb  # Coral USB
+    #   - /dev/bus/usb:/dev/bus/usb
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config:/config
-      - /volume1/Media/frigate:/media/frigate
-
-    networks:
-      traefik-proxy:
-        ipv4_address: 192.168.100.x  # Pick unused IP
+      - /volume1/Media/frigate:/media/frigate  # Adjust path for your system
 
     env_file:
       - .env
 
-    # Ports - accessible via NAS IP
     ports:
-      - "5000:5000"   # Web UI
-      - "8554:8554"   # RTSP restream
+      - "5000:5000"       # Web UI
+      - "8554:8554"       # RTSP restream
       - "8555:8555/tcp"   # WebRTC
       - "8555:8555/udp"   # WebRTC
 
-networks:
-  traefik-proxy:
-    external: true
+# --- OPTIONAL: Traefik reverse proxy ---
+# If you have Traefik set up for SSL/remote access, uncomment below.
+# See: https://github.com/Pharkie/arr-stack-ugreennas for a Traefik setup.
+#
+#     networks:
+#       traefik-proxy:
+#         ipv4_address: 192.168.100.x  # Pick unused IP
+#
+# networks:
+#   traefik-proxy:
+#     external: true

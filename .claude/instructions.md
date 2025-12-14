@@ -1,4 +1,8 @@
-# Frigate on Ugreen NAS - Claude Instructions
+# Claude Instructions for This Repo
+
+This file helps Claude (or other AI assistants) understand the project context when working with this codebase. It contains general patterns and gotchas - no personal credentials or specific IPs.
+
+---
 
 ## Documentation Strategy
 
@@ -66,7 +70,7 @@ ha backups list       # List backups
 HA config files are owned by root. The hassio user MUST use sudo to edit:
 ```bash
 # Use password auth (key may not work)
-sshpass -p 'PASSWORD' ssh hassio@homeassistant.local "sudo sed -i 's|old|new|g' /homeassistant/automations.yaml"
+sshpass -p 'YOUR_SSH_PASSWORD' ssh hassio@homeassistant.local "sudo sed -i 's|old|new|g' /homeassistant/automations.yaml"
 
 # Reload after editing
 source .env && curl -X POST "$HA_URL/api/services/automation/reload" -H "Authorization: Bearer $HA_TOKEN"
