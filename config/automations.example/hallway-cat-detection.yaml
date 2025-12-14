@@ -11,12 +11,12 @@
 #
 # Setup:
 #   1. Copy to config/automations/
-#   2. Update: camera name, labels, provider ID, model, notify service
+#   2. Update: camera name, labels, provider ID, model, notify service, external URL
 #   3. Import into HA: Settings → Automations → Create → Edit as YAML
 
 alias: Hallway Cat Detection
 description: Simple Frigate + LLM Vision notification
-mode: restart
+mode: single  # Safest - ignores new triggers while running
 
 trigger:
   - trigger: mqtt
@@ -36,6 +36,7 @@ action:
       camera: "{{ trigger.payload_json.after.camera }}"
       label: "{{ trigger.payload_json.after.label | title }}"
       thumbnail_url: "/api/frigate/notifications/{{ id }}/thumbnail.jpg"
+      clip_url: "https://YOUR_HA_EXTERNAL_URL/api/frigate/notifications/{{ id }}/{{ camera }}/clip.mp4?sign=true"
 
   # Short delay to ensure clip is fully ready
   - delay:
@@ -58,13 +59,21 @@ action:
       generate_title: true
       message: Describe what is happening in one sentence.
     response_variable: response
+    continue_on_error: true  # Don't break automation if LLM fails
 
   - action: notify.mobile_app_your_phone  # Replace with your notify service
     data:
       title: "{{ camera | title }}: {{ label }}"
       message: "{{ response.response_text | default(label ~ ' detected') }}"
       data:
+        url: "{{ clip_url }}"           # iOS - opens clip when tapped
+        clickAction: "{{ clip_url }}"   # Android - opens clip when tapped
         attachment:
           url: "{{ thumbnail_url }}"
         push:
           interruption-level: active
+
+  # Cooldown to prevent rapid triggers and resource exhaustion
+  - delay:
+      minutes: 2
+    alias: Cooldown to prevent rapid triggers
