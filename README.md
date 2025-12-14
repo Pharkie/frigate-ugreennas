@@ -4,10 +4,9 @@ Frigate detects objects, LLM describes the scene, and you get a video clip notif
 
 ## What You Get
 
-A notification like:
-> **Hallway: Person**
-> A person in a dark jacket walks through the hallway carrying a package.
-> *[Tap to view clip]*
+A notification with the AI description and a thumbnail. Tap to view the clip.
+
+![iOS notification example](docs/images/ios_notification.png)
 
 ## What This Repo Contains
 
