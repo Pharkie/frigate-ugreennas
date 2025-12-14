@@ -57,7 +57,7 @@ cat docker-compose.frigate.yml | ssh your-user@your-nas.local "cat > /volume1/do
 ## Network Considerations
 
 ### Existing Infrastructure
-The NAS already has a Docker network from the arr-stack project:
+The NAS already has a Docker network from the [arr-stack project](https://github.com/Pharkie/arr-stack-ugreennas):
 - **Network**: traefik-proxy (192.168.100.0/24)
 - **Traefik**: 192.168.100.2 (reverse proxy with SSL)
 
