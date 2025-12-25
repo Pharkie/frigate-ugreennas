@@ -41,6 +41,7 @@ ssh user@nas "echo 'PASS' | sudo -S <command>"
 - Volume mounts from /volume1/
 - Docker Compose v2
 - Traefik reverse proxy with Cloudflare SSL
+- **Project quotas** (prjquota) for directory-level storage limits
 
 ### What Doesn't Work / Gotchas
 - **nginx owns ports 80/443**: Use alternate ports for Traefik
@@ -108,6 +109,7 @@ Frigate only recognizes env vars prefixed with `FRIGATE_`. Use `FRIGATE_NVR_IP`,
 ### Paths
 - **NAS Path**: `/volume1/docker/frigate/`
 - **Recordings**: `/volume1/Media/frigate/`
+- **Storage Quota**: 1.5TB project quota (project ID 100) - see docs/UGOS-SETUP.md
 
 ### Ports
 - 5000: Web UI (no auth)

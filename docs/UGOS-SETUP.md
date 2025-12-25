@@ -84,10 +84,67 @@ services:
   frigate:
     networks:
       traefik-proxy:
-        ipv4_address: 192.168.100.20  # Pick unused IP from your Traefik network
+        ipv4_address: 172.20.0.20  # Pick unused IP from traefik-proxy subnet (172.20.0.0/24)
 ```
 
 This allows accessing Frigate via your domain with SSL (e.g., `https://frigate.yourdomain.com`).
+
+## Storage Quota
+
+Frigate can consume significant disk space (200-300 GB/day with 4 cameras). UGOS supports Linux project quotas to limit storage.
+
+### Setting Up a Directory Quota
+
+```bash
+# 1. Create project mapping files (run with sudo on NAS)
+echo "100:/volume1/Media/frigate" | sudo tee -a /etc/projects
+echo "frigate:100" | sudo tee -a /etc/projid
+
+# 2. Enable project quotas (usually already enabled on UGOS)
+sudo quotaon -Pv /volume1
+
+# 3. Assign project ID to frigate directory (with inheritance)
+sudo chattr +P -p 100 /volume1/Media/frigate
+
+# 4. Apply project ID to all existing files
+sudo find /volume1/Media/frigate -exec chattr -p 100 {} \;
+
+# 5. Set inheritance flag on all subdirectories
+sudo find /volume1/Media/frigate -type d -exec chattr +P {} \;
+
+# 6. Set quota limit (1.5TB = 1572864000 KB)
+sudo setquota -P 100 0 1572864000 0 0 /volume1
+
+# 7. Verify
+sudo repquota -P /volume1 | grep frigate
+```
+
+### How It Works
+
+- When Frigate hits the quota, writes fail with "quota exceeded"
+- This triggers Frigate's auto-cleanup (deletes oldest recordings)
+- Retention settings become "up to X days, space permitting"
+
+### Checking Quota Usage
+
+```bash
+sudo repquota -P /volume1 | grep frigate
+# Output: frigate   -- 1230725388       0 1572864000   ...
+#         (used KB)     (soft)   (hard limit)
+```
+
+### Common Quota Sizes
+
+| Size | KB Value | Days of Recording* |
+|------|----------|-------------------|
+| 500 GB | 524288000 | ~2 days |
+| 1 TB | 1048576000 | ~4 days |
+| 1.5 TB | 1572864000 | ~6 days |
+| 2 TB | 2097152000 | ~8 days |
+
+*Approximate, depends on camera count and motion activity.
+
+---
 
 ## Hardware Limitations
 

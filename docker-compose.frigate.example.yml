@@ -30,7 +30,7 @@ services:
 #
 #     networks:
 #       traefik-proxy:
-#         ipv4_address: 192.168.100.x  # Pick unused IP
+#         ipv4_address: 172.20.0.x  # Pick unused IP from traefik-proxy subnet
 #
 # networks:
 #   traefik-proxy:
